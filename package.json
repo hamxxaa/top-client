@@ -1,0 +1,20 @@
+{
+  "name": "phaser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean-dist": "rm -rf dist && mkdir dist",
+    "copy-image": "cp -vR ./src/assets ./dist",
+    "copy-audio": "cp -vR ./src/audio ./dist",
+    "init": "npm run clean-dist && npm run copy-image && npm run copy-audio",
+    "start": "npm run init && parcel src/index.html   "
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "parcel-bundler": "^1.12.5",
+    "phaser": "^3.80.1",
+    "socket.io-client": "^4.7.5"
+  }
+}
