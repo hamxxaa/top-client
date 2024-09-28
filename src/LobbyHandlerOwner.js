@@ -5,9 +5,6 @@ export default class LobbyHandlerClient extends LobbyHandler {
         super(scene)
         this.setupListeners(scene)
 
-        scene.events.on("start game", () => { scene.socket.emit("start game")
-            console.log("started");
-            
-         })
+        scene.events.on("start game", () => { scene.socket.emit("start game") })
     }
 }

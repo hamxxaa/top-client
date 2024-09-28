@@ -30,9 +30,7 @@ export default class LobbyHandler {
         })
 
         scene.socket.on("game started", () => {
-            console.log("game started")
             scene.scene.start('game', { playerName: scene.playerName, selectedTeam: scene.selectedTeam, speed: scene.speed, power: scene.power, size: scene.size, socket: scene.socket, roomID: scene.roomID });
-
         })
 
         scene.socket.on("validate stats", (stat, change, points) => { scene.events.emit("validate stats", stat, change, points) })
