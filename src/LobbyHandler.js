@@ -37,5 +37,7 @@ export default class LobbyHandler {
 
         scene.events.on("update stats", (stat, change) => { scene.socket.emit("update stats", stat, change) })
         scene.events.on("update team", (selectedTeam) => { scene.socket.emit("update team", selectedTeam) })
+
+        
     }
 }
