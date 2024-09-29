@@ -4,19 +4,17 @@ export default class RoomHandler {
     constructor(scene) {
         scene.socket = io('http://localhost:3000/')
 
-        //
+        //get initial rooms
         scene.socket.on("rooms", rooms => {
             scene.rooms = rooms;
             scene.updateRoomList()
         })
 
         scene.socket.on("owner can connect to lobby", (roomID) => {
-            // scene.socket.removeAllListeners();
             scene.scene.start('lobbyowner', { socket: scene.socket, roomID: roomID, name: scene.playerName });
         })
 
         scene.socket.on("player can connect to lobby", (roomID) => {
-            // scene.socket.removeAllListeners();
             scene.scene.start('lobbyplayer', { socket: scene.socket, roomID: roomID, name: scene.playerName });
         })
 

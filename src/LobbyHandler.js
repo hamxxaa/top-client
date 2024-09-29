@@ -9,6 +9,7 @@ export default class LobbyHandler {
 
         scene.socket.emit("player connected to lobby", scene.playerName)
 
+        //get initial players in the lobby
         scene.socket.on("get lobby", (info) => {
             for (const [key] of Object.entries(info)) {
                 scene.playersInLobby[key] = { name: info[key].name, team: info[key].team }
@@ -17,7 +18,7 @@ export default class LobbyHandler {
         })
 
         
-
+        //update information about players in the lobby
         scene.socket.on("update lobby", info => {
             if (scene.playersInLobby[info.id]) {
                 scene.playersInLobby[info.id].name = info.name

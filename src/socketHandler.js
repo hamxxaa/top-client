@@ -12,6 +12,7 @@ export default class SocketHandler {
             scene.socket.emit("spec connected")
         }
 
+        //Draw the ball, scores and players to the scene
         scene.socket.on("draw players", (info) => {
             scene.players['ball'] = new Ball(scene, 300, 300, "toptop")
             scene.score1 = 0
@@ -74,6 +75,7 @@ export default class SocketHandler {
             })
         })
 
+        // Update spectators on the game
         scene.socket.on("update specs", (specs) => {
 
             if (!this.specConnected) {

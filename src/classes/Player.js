@@ -34,17 +34,21 @@ export default class Player extends Phaser.Physics.Matter.Image {
 
     update() {
         //geting inputs and sending to server
-        if (this.cursors.left.isDown) this.scene.socket.emit('left is down');
-        if (this.cursors.right.isDown) this.scene.socket.emit('right is down');
-        if (this.cursors.up.isDown) this.scene.socket.emit('up is down');
-        if (this.cursors.down.isDown) this.scene.socket.emit('down is down');
+        let totalInput = 0
+        if (this.cursors.left.isDown) totalInput += 1;
+        if (this.cursors.right.isDown) totalInput += 2;
+        if (this.cursors.up.isDown) totalInput += 4;
+        if (this.cursors.down.isDown) totalInput += 8;
         if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
-            this.scene.socket.emit("shoot")
+            totalInput += 16
             //making reach brigther when shooting
             this.reach.setAlpha(1)
         }
         //turning reach to normal after shoot
         if (Phaser.Input.Keyboard.JustUp(this.cursors.space)) this.reach.setAlpha(0.5)
+
+        //sending inputs to server
+        this.scene.socket.emit('player input', totalInput)
 
         //keeping reach and name with player
         this.name.setPosition(this.x, this.y)

@@ -12,15 +12,11 @@ export default class LobbyBase extends Phaser.Scene {
     }
 
     create() {
-        // this.socket = this.scene.settings.data.socket
-        // this.roomID = this.scene.settings.data.roomID
-        // this.playerName = this.scene.settings.data.name
         this.playersInLobby = {};
         this.playerNameTextObjects = [];
         this.selectedTeam = "spec"
 
-        // this.LobbyHandler = new LobbyHandler(this)
-
+        //draw the UI for managing stats 
         this.add.text(1700, 200, 'Stats', {
             fontSize: '24px',
             fill: '#ffffff'
@@ -165,6 +161,7 @@ export default class LobbyBase extends Phaser.Scene {
         });
         teamBPulseTween.pause();
 
+        //Change the state of the stat with info from server
         this.events.on("validate stats", (stat, change, points) => {
             switch (stat) {
                 //speed
