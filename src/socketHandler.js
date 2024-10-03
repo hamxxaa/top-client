@@ -1,9 +1,12 @@
 import io from 'socket.io-client';
 import Player from './classes/Player'
 import Ball from './classes/Ball'
+import ListenerRemover from './classes/ListenerRemover';
 
 export default class SocketHandler {
     constructor(scene) {
+        global.listenerRemover.removeLobbyHandlerListeners()
+
         this.specConnected = false;
 
         scene.socket.emit("game started on client side")

@@ -12,6 +12,7 @@ export default class LobbyBase extends Phaser.Scene {
     }
 
     create() {
+
         this.playersInLobby = {};
         this.playerNameTextObjects = [];
         this.selectedTeam = "spec"

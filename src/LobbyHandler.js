@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import ListenerRemover from './classes/ListenerRemover';
 
 export default class LobbyHandler {
     constructor(scene) {
@@ -6,6 +7,7 @@ export default class LobbyHandler {
     }
 
     setupListeners(scene) {
+        global.listenerRemover.removeRoomHandlerListeners()
 
         scene.socket.emit("player connected to lobby", scene.playerName)
 
@@ -31,6 +33,7 @@ export default class LobbyHandler {
         })
 
         scene.socket.on("game started", () => {
+            scene.events.removeAllListeners()
             scene.scene.start('game', { playerName: scene.playerName, selectedTeam: scene.selectedTeam, speed: scene.speed, power: scene.power, size: scene.size, socket: scene.socket, roomID: scene.roomID });
         })
 
