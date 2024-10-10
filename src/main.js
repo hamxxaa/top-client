@@ -5,6 +5,7 @@ import PauseScreen from './scenes/PauseScreen'
 import MainMenu from './scenes/MainMenu'
 import LobbyOwner from './scenes/LobbyOwner'
 import LobbyPlayer from './scenes/LobbyPlayer'
+import LobbySetup from './scenes/LobbySetup'
 
 const config = {
     width: 2000,
@@ -31,6 +32,7 @@ game.scene.add('mainmenu', MainMenu)
 game.scene.add('game', Game)
 game.scene.add('lobbyplayer', LobbyPlayer)
 game.scene.add('lobbyowener', LobbyOwner)
+game.scene.add('lobbysetup', LobbySetup)
 game.scene.start('mainmenu')
 
 
