@@ -11,4 +11,11 @@ export default class Player extends Phaser.Physics.Matter.Image {
         this.setExistingBody(ballBody)
         this.setPosition(x, y)
     }
+
+    setcx(x) {
+        this.setX(x)
+    }
+    setcy(y) {
+        this.setY(y)
+    }
 }

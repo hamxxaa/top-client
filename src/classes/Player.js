@@ -26,32 +26,26 @@ export default class Player extends Phaser.Physics.Matter.Image {
         const playerBody = this.scene.Bodies.circle(x, y, 1)
         this.setExistingBody(playerBody)
         this.setPosition(x, y)
+        this.reach.setPosition(x, y)
+        this.name.setPosition(x, y)
 
+    }
 
-        //cursors for input
-        this.cursors = scene.input.keyboard.createCursorKeys()
+    setcx(x) {
+        this.setX(x)
+        this.name.setX(x)
+        this.reach.setX(x)
+    }
+
+    setcy(y) {
+        this.setY(y)
+        this.name.setY(y)
+        this.reach.setY(y)
     }
 
     update() {
-        //geting inputs and sending to server
-        let totalInput = 0
-        if (this.cursors.left.isDown) totalInput += 1;
-        if (this.cursors.right.isDown) totalInput += 2;
-        if (this.cursors.up.isDown) totalInput += 4;
-        if (this.cursors.down.isDown) totalInput += 8;
-        if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
-            totalInput += 16
-            //making reach brigther when shooting
-            this.reach.setAlpha(1)
-        }
-        //turning reach to normal after shoot
-        if (Phaser.Input.Keyboard.JustUp(this.cursors.space)) this.reach.setAlpha(0.5)
-
-        //sending inputs to server
-        this.scene.socket.emit('player input', totalInput)
-
         //keeping reach and name with player
-        this.name.setPosition(this.x, this.y)
-        this.reach.setPosition(this.x, this.y)
+        // this.name.setPosition(this.x, this.y)
+        // this.reach.setPosition(this.x, this.y)
     }
 }

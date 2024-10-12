@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 import Player from '../classes/Player'
 import Ball from '../classes/Ball'
 import Direk from '../classes/Direk'
-
 import SocketHandler from '../socketHandler'
 
 export default class Game extends Phaser.Scene {
@@ -34,6 +33,7 @@ export default class Game extends Phaser.Scene {
 
     }
     create() {
+
         //data from title screen
         this.name = this.scene.settings.data.playerName
         this.team = this.scene.settings.data.selectedTeam
@@ -63,10 +63,7 @@ export default class Game extends Phaser.Scene {
         this.direk4 = new Direk(this, 30, 300, 'top')
     }
     update() {
-        //running every players update constantly
-        for (const [key, player] of Object.entries(this.players)) {
-            player.update()
-        }
+        //getting and sending client inputs
+        this.events.emit("inputUpdate")
     }
-
 }

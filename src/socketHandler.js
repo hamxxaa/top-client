@@ -2,12 +2,13 @@ import io from 'socket.io-client';
 import Player from './classes/Player'
 import Ball from './classes/Ball'
 import ListenerRemover from './classes/ListenerRemover';
+import PlayerInputs from './classes/PlayerInputs'
 
 export default class SocketHandler {
     constructor(scene) {
         global.listenerRemover.removeLobbyHandlerListeners()
 
-        this.specConnected = false;
+        this.specConnected = null;
 
         scene.socket.emit("game started on client side")
 
@@ -25,6 +26,7 @@ export default class SocketHandler {
             for (const [key] of Object.entries(info)) {
                 scene.players[key] = new Player(scene, info[key].x, info[key].y, "galatasaray", key, info[key].name, info[key].team, info[key].size)
             }
+            scene.inputGetter = new PlayerInputs(scene, scene.players[scene.socket.id])
         })
 
 
@@ -32,19 +34,19 @@ export default class SocketHandler {
         scene.socket.on("update clients", (updates) => {
             for (const [key, player] of Object.entries(updates)) {
                 if (updates[key].x) {
-                    scene.players[key].setX(updates[key].x)
+                    scene.players[key].setcx(updates[key].x)
                 }
                 if (updates[key].y) {
-                    scene.players[key].setY(updates[key].y)
+                    scene.players[key].setcy(updates[key].y)
                 }
             }
         })
 
         //play sound when ball hit post
-        scene.socket.on("direk", () => {
-            const soundToPlay = Math.floor(Math.random() * scene.direkSounds.length);
-            scene.sound.play(scene.direkSounds[soundToPlay])
-        })
+        // scene.socket.on("direk", () => {
+        //     const soundToPlay = Math.floor(Math.random() * scene.direkSounds.length);
+        //     scene.sound.play(scene.direkSounds[soundToPlay])
+        // })
 
         //update scores on goal
         scene.socket.on("update score1", score => {
@@ -57,10 +59,10 @@ export default class SocketHandler {
         })
 
         //play sound when player shoot the ball
-        scene.socket.on("play shoot sounds on client", () => {
-            const soundToPlay = Math.floor(Math.random() * scene.vurSounds.length);
-            scene.sound.play(scene.vurSounds[soundToPlay])
-        })
+        // scene.socket.on("play shoot sounds on client", () => {
+        //     const soundToPlay = Math.floor(Math.random() * scene.vurSounds.length);
+        //     scene.sound.play(scene.vurSounds[soundToPlay])
+        // })
 
         //destroy player when client disconnected
         scene.socket.on("user disconnected", ID => {
@@ -82,11 +84,10 @@ export default class SocketHandler {
         scene.socket.on("update specs", (specs) => {
 
             if (!this.specConnected) {
-                scene.add.text(800, 35, "Spectators", {
+                this.specConnected = scene.add.text(800, 35, "Spectators", {
                     fontSize: '18px',
                     fill: '#ffffff'
                 }).setOrigin(0.5)
-                this.specConnected = true
             }
 
             scene.specs.forEach(element => {
