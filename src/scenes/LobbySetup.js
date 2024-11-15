@@ -17,6 +17,7 @@ export default class LobbySetup extends Phaser.Scene {
 
         this.enterNameTextObject = this.add.text(200, 100, "Click here to enter room's name").setOrigin(0.5).setInteractive({ useHandCursor: true })
         this.enterNameTextObject.on('pointerdown', () => {
+            this.enterNameTextObject.disableInteractive()
             this.startButton.disableInteractive()
             const keyboardListener = (event) => {
                 if ((event.keyCode === 32 || (event.keyCode >= 48 && event.keyCode <= 90)) && this.roomName.length < 10) {
@@ -31,6 +32,7 @@ export default class LobbySetup extends Phaser.Scene {
                 else if (event.keyCode === 13 && this.roomName.length > 0) {
                     this.input.keyboard.off('keydown', keyboardListener);
                     this.startButton.setInteractive({ useHandCursor: true })
+                    this.enterNameTextObject.disableInteractive()
                 }
             }
             this.input.keyboard.on('keydown', keyboardListener)

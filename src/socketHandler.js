@@ -3,6 +3,9 @@ import Player from './classes/Player'
 import Ball from './classes/Ball'
 import ListenerRemover from './classes/ListenerRemover';
 import PlayerInputs from './classes/PlayerInputs'
+import moveActionX from './actions/moveActionX';
+import moveActionY from './actions/moveActionY';
+import textAction from './actions/textAction';
 
 export default class SocketHandler {
     constructor(scene) {
@@ -17,27 +20,34 @@ export default class SocketHandler {
         }
 
         //Draw the ball, scores and players to the scene
-        scene.socket.on("draw players", (info) => {
-            scene.players['ball'] = new Ball(scene, 300, 300, "toptop")
-            scene.score1 = 0
-            scene.score2 = 0
-            scene.scoreText1 = scene.add.text(50, 50, scene.score1, { fontSize: '32px', fill: '#ffffff' })
-            scene.scoreText2 = scene.add.text(700, 50, scene.score2, { fontSize: '32px', fill: '#ffffff' })
+        scene.socket.on("draw players", (info, id, config) => {
+            scene.drawInitialObjects(config)
             for (const [key] of Object.entries(info)) {
-                scene.players[key] = new Player(scene, info[key].x, info[key].y, "galatasaray", key, info[key].name, info[key].team, info[key].size)
+                scene.objects[key] = new Player(scene, info[key].x, info[key].y, "galatasaray", key, info[key].name, info[key].team, info[key].size)
             }
-            scene.inputGetter = new PlayerInputs(scene, scene.players[scene.socket.id])
+            if (id) {
+                scene.inputGetter = new PlayerInputs(scene, scene.objects[id])
+            }
         })
 
 
         //update clients according to servers calculated updates
         scene.socket.on("update clients", (updates) => {
+            // console.log("update at: " + Date.now() + " length of the updates: " + Object.keys(updates).length);
+            scene.actions = []
             for (const [key, player] of Object.entries(updates)) {
                 if (updates[key].x) {
-                    scene.players[key].setcx(updates[key].x)
+                    scene.actions.push(new moveActionX(scene.objects[key], updates[key].x))
                 }
                 if (updates[key].y) {
-                    scene.players[key].setcy(updates[key].y)
+                    scene.actions.push(new moveActionY(scene.objects[key], updates[key].y))
+                }
+                if (updates[key].text) {
+                    console.log(key);
+                    
+                    console.log(scene.objects[key]);
+                    
+                    scene.actions.push(new textAction(scene.objects[key], updates[key].text))
                 }
             }
         })
@@ -48,16 +58,6 @@ export default class SocketHandler {
         //     scene.sound.play(scene.direkSounds[soundToPlay])
         // })
 
-        //update scores on goal
-        scene.socket.on("update score1", score => {
-            scene.score1 = score
-            scene.scoreText1.setText(scene.score1)
-        })
-        scene.socket.on("update score2", score => {
-            scene.score2 = score
-            scene.scoreText2.setText(scene.score2)
-        })
-
         //play sound when player shoot the ball
         // scene.socket.on("play shoot sounds on client", () => {
         //     const soundToPlay = Math.floor(Math.random() * scene.vurSounds.length);
@@ -66,10 +66,10 @@ export default class SocketHandler {
 
         //destroy player when client disconnected
         scene.socket.on("user disconnected", ID => {
-            scene.players[ID].reach.destroy()
-            scene.players[ID].name.destroy()
-            scene.players[ID].destroy()
-            delete scene.players[ID]
+            scene.objects[ID].reach.destroy()
+            scene.objects[ID].name.destroy()
+            scene.objects[ID].destroy()
+            delete scene.objects[ID]
         })
 
         //go to pause scene after a goal for a few seconds 

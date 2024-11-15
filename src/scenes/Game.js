@@ -2,8 +2,8 @@ import Phaser from 'phaser'
 
 import Player from '../classes/Player'
 import Ball from '../classes/Ball'
-import Direk from '../classes/Direk'
 import SocketHandler from '../socketHandler'
+import defaults from '../defaults';
 
 export default class Game extends Phaser.Scene {
 
@@ -43,27 +43,80 @@ export default class Game extends Phaser.Scene {
         this.power = this.scene.settings.data.power
         this.size = this.scene.settings.data.size
 
+        this.defaults = defaults
+
         //sounds
         this.vurSounds = ['vur1', 'vur2', 'vur3', 'vur4', 'vur5', 'vur6', 'vur7', 'vur8'];
         this.direkSounds = ['direk1', 'direk2', 'direk3', 'direk4', 'direk5', 'direk6', 'direk7'];
 
         //object to keep players
-        this.players = {};
+        this.objects = {};
         this.specs = [];
+        this.actions = [];
 
         //for handling socket processes
         this.SocketHandler = new SocketHandler(this);
-
-        //drawing map
-        this.goalline1 = this.matter.add.image(30, 250, 'goalline', null, { isStatic: true, isSensor: true }).setScale(0.5, 1)
-        this.goalline2 = this.matter.add.image(770, 250, 'goalline', null, { isStatic: true, isSensor: true }).setScale(0.5, 1)
-        this.direk = new Direk(this, 770, 200, 'top')
-        this.direk2 = new Direk(this, 770, 300, 'top')
-        this.direk3 = new Direk(this, 30, 200, 'top')
-        this.direk4 = new Direk(this, 30, 300, 'top')
     }
     update() {
+        this.actions.forEach(action => {
+            action.run()
+            // console.log(action.date);
+        });
+        this.actions = []
+
         //getting and sending client inputs
         this.events.emit("inputUpdate")
     }
+
+    drawInitialObjects(config) {
+        config.ball.forEach(ball => {
+            const style = Object.assign({}, this.defaults.ballDefaults, ball)
+            const { x, y, radius, id } = style
+            this.objects[id] = new Ball(this, x, y, 'toptop', radius)
+        });
+
+        config.score.forEach(score => {
+            const style = Object.assign({}, this.defaults.textDefaults, score.style)
+            this.objects[score.id] = this.add.text(score.x, score.y, 0, style)
+        })
+
+        config.goalline.forEach(goalline => {
+            const style = Object.assign({}, this.defaults.goallineDefaults, goalline)
+            const { x, y, height, width, goalareaoffset, fillColor, angle, posts, id } = style
+            this.matter.add.rectangle(style.x + Math.cos(angle) * goalareaoffset, y + Math.sin(angle) * goalareaoffset, width, height, { isStatic: true, isSensor: true, angle: angle })
+            this.objects[id] = this.add.rectangle(x, y, width, height, fillColor,).setAngle(Phaser.Math.RadToDeg(angle))
+            this.objects[id + 'a'] = this.add.circle(x - height / 2 * Math.sin(angle), y + height / 2 * Math.cos(angle), posts.radius, posts.fillColor)
+            this.objects[id + 'b'] = this.add.circle(x + height / 2 * Math.sin(angle), y - height / 2 * Math.cos(angle), posts.radius, posts.fillColor)
+        });
+
+        config.obstacles.forEach(obstacle => {
+            this.objects[obstacle.id] = this.createShape(obstacle.config);
+        })
+    }
+
+    createShape(config) {
+        const style = Object.assign({}, config, this.defaults.obstacleDefaults)
+        const { type, x, y, fillColor } = style;
+
+        let shape;
+
+        switch (type) {
+            case 'rectangle':
+                shape = this.add.rectangle(x, y, style.width, style.height, fillColor);
+                break;
+
+            case 'circle':
+                shape = this.add.circle(x, y, style.radius, fillColor);
+                break;
+
+            case 'polygon':
+                shape = this.add.polygon(x, y, style.path, fillColor);
+                break;
+
+            default:
+                throw new Error(`Unknown shape type: ${type}`);
+        }
+        return shape;
+    }
+
 }
