@@ -12,11 +12,4 @@ export default class Ball extends Phaser.Physics.Matter.Image {
         this.setScale(this.radius / this.imageSize);
         this.setPosition(x, y)
     }
-
-    setcx(x) {
-        this.setX(x)
-    }
-    setcy(y) {
-        this.setY(y)
-    }
 }

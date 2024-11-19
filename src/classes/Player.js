@@ -31,21 +31,17 @@ export default class Player extends Phaser.Physics.Matter.Image {
 
     }
 
-    setcx(x) {
-        this.setX(x)
+    setX(x) {
+        super.setX(x)
         this.name.setX(x)
         this.reach.setX(x)
     }
 
-    setcy(y) {
-        this.setY(y)
+    setY(y) {
+        super.setY(y)
         this.name.setY(y)
         this.reach.setY(y)
     }
 
-    update() {
-        //keeping reach and name with player
-        // this.name.setPosition(this.x, this.y)
-        // this.reach.setPosition(this.x, this.y)
-    }
+    update() { }
 }

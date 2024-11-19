@@ -6,6 +6,8 @@ import PlayerInputs from './classes/PlayerInputs'
 import moveActionX from './actions/moveActionX';
 import moveActionY from './actions/moveActionY';
 import textAction from './actions/textAction';
+import moveActionRotate from './actions/RotationAction';
+import RotationAction from './actions/RotationAction';
 
 export default class SocketHandler {
     constructor(scene) {
@@ -43,11 +45,10 @@ export default class SocketHandler {
                     scene.actions.push(new moveActionY(scene.objects[key], updates[key].y))
                 }
                 if (updates[key].text) {
-                    console.log(key);
-                    
-                    console.log(scene.objects[key]);
-                    
                     scene.actions.push(new textAction(scene.objects[key], updates[key].text))
+                }
+                if (updates[key].angle) {
+                    scene.actions.push(new RotationAction(scene.objects[key], updates[key].angle))
                 }
             }
         })

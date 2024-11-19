@@ -66,6 +66,7 @@ export default class Game extends Phaser.Scene {
 
         //getting and sending client inputs
         this.events.emit("inputUpdate")
+
     }
 
     drawInitialObjects(config) {
@@ -91,6 +92,7 @@ export default class Game extends Phaser.Scene {
 
         config.obstacles.forEach(obstacle => {
             this.objects[obstacle.id] = this.createShape(obstacle.config);
+
         })
     }
 

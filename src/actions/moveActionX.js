@@ -7,6 +7,6 @@ export default class extends Action {
     }
 
     run() {
-        this.object.setcx(this.x)
+        this.object.setX(this.x)
     }
 }

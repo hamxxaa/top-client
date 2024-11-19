@@ -1,12 +1,12 @@
 import Action from "./Action";
 
 export default class extends Action {
-    constructor(object, y) {
+    constructor(object, angle) {
         super(object);
-        this.y = y;
+        this.angle = angle;
     }
 
     run() {
-        this.object.setY(this.y)
+        this.object.setAngle(this.angle)
     }
 }
